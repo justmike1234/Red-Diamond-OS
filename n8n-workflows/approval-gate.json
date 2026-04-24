@@ -1,0 +1,44 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [{"mode": "everyMinute"}]
+        },
+        "databaseId": "YOUR_NOTION_DB_ID",
+        "filters": {
+          "conditions": [
+            {
+              "property": "Status",
+              "status": { "equals": "Needs Approval" }
+            }
+          ]
+        }
+      },
+      "name": "Notion Trigger",
+      "type": "n8n-nodes-base.notionTrigger",
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "resume": "webhook",
+        "options": {
+          "webhookMethod": "GET"
+        }
+      },
+      "name": "Wait for Approval",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "sendTo": "your-email@gmail.com",
+        "subject": "RDAOS: Approval Required",
+        "html": "=<h3>Action Required</h3><p>Notion Page: {{ $node[\"Notion Trigger\"].json[\"properties\"][\"Name\"][\"title\"][0][\"plain_text\"] }}</p><a href=\"{{ $node[\"Wait for Approval\"].webhookUrl }}?action=approve\">APPROVE</a> | <a href=\"{{ $node[\"Wait for Approval\"].webhookUrl }}?action=deny\">DENY</a>"
+      },
+      "name": "Gmail Alert",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2
+    }
+  ]
+}
