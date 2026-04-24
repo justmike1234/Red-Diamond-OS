@@ -1,0 +1,22 @@
+{
+  "nodes": [
+    {
+      "parameters": {},
+      "name": "Error Trigger",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [400, 300]
+    },
+    {
+      "parameters": {
+        "sendTo": "justmike1234@gmail.com",
+        "subject": "=🚨 RDAOS SYSTEM ALERT: {{ $node[\"Error Trigger\"].json[\"workflow\"][\"name\"] }}",
+        "html": "=<h3>System Alert</h3><p><b>Workflow:</b> {{ $node[\"Error Trigger\"].json[\"workflow\"][\"name\"] }}</p><p><b>Error:</b> {{ $node[\"Error Trigger\"].json[\"execution\"][\"error\"][\"message\"] }}</p><p><b>Action:</b> Check the B: drive logs for immediate debugging.</p>"
+      },
+      "name": "Send Alert Email",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2,
+      "position": [650, 300]
+    }
+  ]
+}
