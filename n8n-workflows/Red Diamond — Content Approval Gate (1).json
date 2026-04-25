@@ -1,0 +1,131 @@
+{
+  "name": "Red Diamond — Content Approval Gate",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "event": "pagedUpdatedInDatabase",
+        "databaseId": {
+          "__rl": true,
+          "value": "https://www.notion.so/reddiamondrealestategroup/2489df0daf4241e8ab88ad37b4e22d47?v=34b3dd45671c81fe91e0000cdb58edf4&source=copy_link",
+          "mode": "url"
+        }
+      },
+      "type": "n8n-nodes-base.notionTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "53ef501a-7a42-412c-ac2d-50101526ea18",
+      "name": "Notion Trigger",
+      "credentials": {
+        "notionApi": {
+          "id": "Hl1dpUYDGGIykFLC",
+          "name": "Notion account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "755fbbbc-08d5-4fcf-a670-3cbe281f2af8",
+              "leftValue": "={{ $json['Approval Status'] }}",
+              "rightValue": "Pending Approval",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.3,
+      "position": [
+        208,
+        0
+      ],
+      "id": "17ca7a7e-ad8f-49c1-9dce-c74880e00f45",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "sendTo": "rinesh@reddiamondrealestategroup.ca",
+        "subject": "=[Approval Needed]  {{ $('Notion Trigger').item.json['Content Title'] }} — {{ $('Notion Trigger').item.json.Platform }}",
+        "message": "=Call to Action={{ $json.CTA }}                                                 \nCaption={{ $json.Caption }}                                                           \nHook={{ $json.Hook }}                                                                                                  \n\n<p><a href=\"http://100.120.137.122:5678/webhook/1053ba9b-c9b6-4123-9d2c-4aebba25b9df?page_id={{ $json.id }}&action=approve\" style=\"background:green;color:white;padding:10px 20px;text-decoration:none;\">✅ APPROVE</a>\n&nbsp;&nbsp;\n<a href=http://100.120.137.122:5678/webhook/1053ba9b-c9b6-4123-9d2c-4aebba25b9df?page_id={{ $json.id }}&action=deny\" style=\"background:red;color:white;padding:10px 20px;text-decoration:none;\">❌ DENY</a></p>\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        464,
+        0
+      ],
+      "id": "20a575c5-ce47-4a79-9c1f-095ff3bc3f23",
+      "name": "Send a message",
+      "webhookId": "a2012404-1e6c-429d-a2ea-1ff200afbc70",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "2bRv57fR14eG8wLY",
+          "name": "Gmail account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Notion Trigger": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "7f8d3ac3-7ca0-4a0f-b542-3bac8b9bf8be",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "c6c348382304c9f7dfc7e43feee879da761542e09c68153b1d8cb8e01a55781f"
+  },
+  "id": "mKoQaBMxSryvf5at",
+  "tags": []
+}

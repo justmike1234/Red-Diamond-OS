@@ -1,0 +1,184 @@
+{
+  "name": "Red Diamond — Approval Response Handler",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "1053ba9b-c9b6-4123-9d2c-4aebba25b9df",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "b764fcf4-b1e2-4f55-b10a-88cb31fcf7bd",
+      "name": "Webhook",
+      "webhookId": "1053ba9b-c9b6-4123-9d2c-4aebba25b9df"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "77ab897c-fdfe-45c4-a22a-f8196ab5c5ed",
+              "leftValue": "={{ $json.query.action }}",
+              "rightValue": "approve",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        208,
+        0
+      ],
+      "id": "d6fb74d3-deba-45c3-9f44-961e6d755cd7",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "__rl": true,
+          "value": "={{ $json.query.page_id }}",
+          "mode": "id"
+        },
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Approval Status|select",
+              "selectValue": "Denied"
+            },
+            {
+              "key": "Approval Date|date",
+              "date": "={{ $now.format('yyyy-MM-dd') }}"
+            },
+            {
+              "key": "Approved By|select",
+              "selectValue": "Rinesh"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        432,
+        128
+      ],
+      "id": "d86375c3-5e98-41c3-ad3f-be501c1b455d",
+      "name": "Denied",
+      "credentials": {
+        "notionApi": {
+          "id": "Hl1dpUYDGGIykFLC",
+          "name": "Notion account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "__rl": true,
+          "value": "={{ $('Webhook').item.json.query.page_id }}",
+          "mode": "id"
+        },
+        "simple": "={{ true }}",
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Approval Status|select",
+              "selectValue": "Approved"
+            },
+            {
+              "key": "Approved By|select",
+              "selectValue": "Rinesh"
+            },
+            {
+              "key": "Approval Date|date",
+              "date": "={{ $now.format('yyyy-MM-dd HH:mm') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        432,
+        -80
+      ],
+      "id": "1ca5202d-4e33-4d46-a9ca-ed7143a401d3",
+      "name": "Approved",
+      "credentials": {
+        "notionApi": {
+          "id": "Hl1dpUYDGGIykFLC",
+          "name": "Notion account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Approved",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Denied",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "a4a174a5-b8a8-4b41-8c4b-d3f351e88642",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "c6c348382304c9f7dfc7e43feee879da761542e09c68153b1d8cb8e01a55781f"
+  },
+  "id": "BD3en2AyACaP7WHb",
+  "tags": []
+}
